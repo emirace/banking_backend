@@ -57,7 +57,7 @@ export const isAdmin = async (req: NextApiRequest) => {
 // Initialize the CORS middleware
 const cors = Cors({
   origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
 });
 
 // Helper function to run middleware in API routes
