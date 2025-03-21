@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from "next";
+import type { NextApiResponse } from "next";
 import dbConnect from "@/utils/dbConnect";
 import Transaction from "@/model/transaction";
 import User from "@/model/user";
@@ -24,7 +24,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         .json({ message: "Forbidden: Admin access required" });
     }
 
-    const { userId, amount, reason, createdAt } = req.body;
+    const { userId, amount, createdAt } = req.body;
 
     if (!userId || !amount || amount <= 0) {
       return res
@@ -49,7 +49,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     await Transaction.create({
       user: userId,
       amount,
-      type: "Admin Debit",
+      type: "Transfer",
       status: "Completed",
       createdAt: createdAt ? new Date(createdAt) : new Date(),
     });

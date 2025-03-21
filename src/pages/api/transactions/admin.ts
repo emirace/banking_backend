@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextApiResponse } from "next";
 import dbConnect from "@/utils/dbConnect";
 import Transaction from "@/model/transaction";
