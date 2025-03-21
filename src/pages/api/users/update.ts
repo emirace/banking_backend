@@ -21,17 +21,7 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    const fieldsToUpdate = [
-      "email",
-      "fullName",
-      "image",
-      "phone",
-      "focus",
-      "assitance",
-      "budget",
-      "settings",
-      "automation",
-    ];
+    const fieldsToUpdate = ["email", "fullName", "image"];
 
     fieldsToUpdate.forEach((field) => {
       if (req.body[field] !== undefined) {

@@ -16,9 +16,9 @@ export default async function handler(
   await dbConnect();
 
   try {
-    const { fullName, email, password } = req.body;
+    const { fullName, email, password, role } = req.body;
 
-    if (!email || !password || !fullName) {
+    if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
     }
 
@@ -31,13 +31,26 @@ export default async function handler(
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({
+    // Generate a unique 10-digit account number
+    const generateAccountNumber = () => {
+      return Math.floor(1000000000 + Math.random() * 9000000000).toString();
+    };
+
+    const accountNumber = generateAccountNumber();
+
+    const newUser = await User.create({
       fullName,
       email,
       password: hashedPassword,
+      role: role || "User", // Default role is "User"
+      accountNumber,
+      balance: 0,
+      status: "Pending",
     });
 
-    return res.status(201).json({ message: "Registration successful" });
+    return res
+      .status(201)
+      .json({ message: "Registration successful", userId: newUser._id });
   } catch (error) {
     console.error("Register Error:", error);
     return res.status(500).json({ message: "Server error" });
