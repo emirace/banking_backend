@@ -38,7 +38,10 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     }
 
     // Fetch users with pagination
-    const users = await User.find(query).sort({ createdAt: -1 }).lean();
+    const users = await User.find(query)
+      .sort({ createdAt: -1 })
+      .select("-password")
+      .lean();
 
     return res.status(200).json(users);
   } catch (error) {
