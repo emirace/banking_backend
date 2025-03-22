@@ -1,6 +1,7 @@
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Buffer } from "buffer";
+import corsMiddleware from "@/utils/middleware";
 
 const accessKeyId = process.env.AWS_ACCESS_KEY_ID || "";
 const secretAccessKey = process.env.AWS_SECRET_ACCESS_KEY || "";
@@ -19,6 +20,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  await corsMiddleware(req, res);
+
   if (req.method !== "GET") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }

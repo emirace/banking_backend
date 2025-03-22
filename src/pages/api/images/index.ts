@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { S3Client } from "@aws-sdk/client-s3";
 import multer from "multer";
 import multerS3 from "multer-s3";
+import corsMiddleware from "@/utils/middleware";
 
 type NextApiRequestWithFormData = NextApiRequest &
   Request & {
@@ -39,6 +40,8 @@ export default async function handler(
   req: NextApiRequestWithFormData,
   res: NextApiResponseCustom
 ) {
+  await corsMiddleware(req, res);
+
   if (req.method !== "POST") {
     return res.status(405).json({ message: "Method Not Allowed" });
   }
