@@ -37,6 +37,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
       return res.status(201).json(newMessage);
     } catch (error) {
+      console.log(error);
       return res.status(500).json({ message: "Error sending message" });
     }
   }
