@@ -22,9 +22,6 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(403).json({ message: "Access denied" });
       }
 
-      const sample = await Message.find({ receiver: admin._id });
-      console.log(sample);
-
       // Fetch distinct users who have messaged the admin
       const userMessages = await Message.aggregate([
         {
@@ -47,7 +44,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
           const user = await User.findById(conv._id).select("name email");
           return {
             userId: conv._id,
-            name: user?.name || "Unknown",
+            name: user?.fullName || "Unknown",
             email: user?.email || "No Email",
             lastMessage: conv.lastMessage,
             lastUpdated: conv.lastUpdated,
