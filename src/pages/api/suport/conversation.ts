@@ -22,11 +22,22 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(403).json({ message: "Access denied" });
       }
 
+      const sample = await Message.find({ receiver: admin._id });
+      console.log(sample);
+
       // Fetch distinct users who have messaged the admin
       const userMessages = await Message.aggregate([
         {
-          $match: { receiver: adminId }, // Messages sent to the admin
+          $match: { receiver: admin._id }, // Messages sent to the admin
         },
+        {
+          $group: {
+            _id: "$sender", // Group messages by sender
+            lastMessage: { $last: "$message" },
+            lastUpdated: { $last: "$createdAt" },
+          },
+        },
+        { $sort: { lastUpdated: -1 } },
       ]);
 
       console.log(userMessages);
