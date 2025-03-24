@@ -17,6 +17,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
       // Ensure only admins can access
       const admin = await User.findById(adminId);
+      console.log(admin);
       if (!admin || admin.role !== "Admin") {
         return res.status(403).json({ message: "Access denied" });
       }
@@ -36,6 +37,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         { $sort: { lastUpdated: -1 } },
       ]);
 
+      console.log(userMessages);
       // Populate user details
       const userConversations = await Promise.all(
         userMessages.map(async (conv) => {
