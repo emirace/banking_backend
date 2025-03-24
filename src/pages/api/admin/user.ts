@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { NextApiResponse } from "next";
 import bcrypt from "bcryptjs";
 import dbConnect from "@/utils/dbConnect";
