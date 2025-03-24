@@ -9,6 +9,8 @@ const UserSchema = new mongoose.Schema({
   accountNumber: { type: String },
   balance: { type: Number, default: 0 },
   status: { type: String, enum: ["Pending", "Active"], default: "Pending" },
+  transactionCode: { code: { type: String }, expire: { type: Date } },
+  hasTransactionCode: { type: Boolean, default: false },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

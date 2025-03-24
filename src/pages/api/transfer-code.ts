@@ -6,6 +6,7 @@ import corsMiddleware, {
   AuthenticatedRequest,
   authenticateUser,
 } from "@/utils/middleware";
+import bcrypt from "bcryptjs";
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   await corsMiddleware(req, res);
@@ -19,13 +20,18 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   try {
     const userId = req.user!.id;
 
-    const { amount, accountNumber, bankName, accountName, iban, swiftCode } =
-      req.body;
+    const {
+      amount,
+      accountNumber,
+      bankName,
+      accountName,
+      iban,
+      swiftCode,
+      code,
+    } = req.body;
 
     if (!amount || amount <= 0) {
-      return res
-        .status(400)
-        .json({ message: "Valid recipient email and amount are required" });
+      return res.status(400).json({ message: "Valid amount are required" });
     }
 
     // Fetch sender and recipient
@@ -39,8 +45,9 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    if (sender.hasTransactionCode) {
-      return res.status(400).json({ message: "Require code" });
+    const isMatch = await bcrypt.compare(code, sender.transactionCode!);
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid transaction code" });
     }
 
     // Deduct balance from sender (status remains "Pending")

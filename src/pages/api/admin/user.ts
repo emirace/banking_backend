@@ -1,4 +1,5 @@
 import type { NextApiResponse } from "next";
+import bcrypt from "bcryptjs";
 import dbConnect from "@/utils/dbConnect";
 import User from "@/model/user";
 import corsMiddleware, {
@@ -41,7 +42,34 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       }
     }
 
-    const user = await User.findByIdAndUpdate(userId, updates, { new: true });
+    const updateData: any = { ...updates };
+
+    // Encrypt transactionCode before storing
+    if (updates.transactionCode) {
+      if (
+        typeof updates.transactionCode !== "object" ||
+        !updates.transactionCode.code ||
+        !updates.transactionCode.expire
+      ) {
+        return res
+          .status(400)
+          .json({ message: "Invalid transactionCode format" });
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedCode = await bcrypt.hash(updates.transactionCode.code, salt);
+
+      updateData.transactionCode = {
+        code: hashedCode,
+        expire: new Date(updates.transactionCode.expire),
+      };
+
+      updateData.hasTransactionCode = true;
+    }
+
+    const user = await User.findByIdAndUpdate(userId, updateData, {
+      new: true,
+    });
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
