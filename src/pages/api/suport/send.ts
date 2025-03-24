@@ -5,6 +5,7 @@ import corsMiddleware, {
   authenticateUser,
   AuthenticatedRequest,
 } from "@/utils/middleware";
+import User from "@/model/user";
 
 async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
   await corsMiddleware(req, res);
@@ -19,10 +20,17 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         return res.status(400).json({ message: "Message cannot be empty" });
       }
 
+      let sendTo = receiver;
+
+      if (receiver === "Admin") {
+        const admin = await User.findOne({ role: "Admin" });
+        sendTo = admin._id;
+      }
+
       // Save the message
       const newMessage = await Message.create({
         sender,
-        receiver,
+        receiver: sendTo,
         message,
         isAdmin,
       });
