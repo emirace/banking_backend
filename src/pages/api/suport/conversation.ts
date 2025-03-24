@@ -27,14 +27,6 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
         {
           $match: { receiver: adminId }, // Messages sent to the admin
         },
-        {
-          $group: {
-            _id: "$sender", // Group messages by sender
-            lastMessage: { $last: "$message" },
-            lastUpdated: { $last: "$createdAt" },
-          },
-        },
-        { $sort: { lastUpdated: -1 } },
       ]);
 
       console.log(userMessages);
