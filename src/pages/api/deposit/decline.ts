@@ -25,7 +25,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
 
     const { transactionId, reason } = req.body;
 
-    if (!transactionId || !reason) {
+    if (!transactionId) {
       return res
         .status(400)
         .json({ message: "Transaction ID and reason are required" });
