@@ -45,7 +45,14 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       return res.status(400).json({ message: "Insufficient balance" });
     }
 
-    const isMatch = await bcrypt.compare(code, sender.transactionCode!);
+    if (
+      sender.transactionCode.expire &&
+      new Date() > sender.transactionCode.expire
+    ) {
+      return res.status(400).json({ message: "Transaction code has expired" });
+    }
+
+    const isMatch = await bcrypt.compare(code, sender.transactionCode.code!);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid transaction code" });
     }
