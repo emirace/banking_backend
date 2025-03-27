@@ -41,7 +41,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       // Populate user details
       const userConversations = await Promise.all(
         userMessages.map(async (conv) => {
-          const user = await User.findById(conv._id).select("name email");
+          const user = await User.findById(conv._id).select("fullName email");
           return {
             userId: conv._id,
             name: user?.fullName || "Unknown",
