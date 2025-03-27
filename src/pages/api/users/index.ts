@@ -13,7 +13,9 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   await dbConnect();
 
   try {
-    const user = await User.findById(req.user!.id).select("-password");
+    const user = await User.findById(req.user!.id).select(
+      "-password -transactionCode"
+    );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

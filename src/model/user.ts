@@ -10,6 +10,7 @@ const UserSchema = new mongoose.Schema({
   balance: { type: Number, default: 0 },
   status: { type: String, enum: ["Pending", "Active"], default: "Pending" },
   transactionCode: { code: { type: String }, expire: { type: Date } },
+  codeDescription: { type: String },
   hasTransactionCode: { type: Boolean, default: false },
 });
 
