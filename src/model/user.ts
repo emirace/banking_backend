@@ -12,6 +12,8 @@ const UserSchema = new mongoose.Schema({
   transactionCode: { code: { type: String }, expire: { type: Date } },
   codeDescription: { type: String },
   hasTransactionCode: { type: Boolean, default: false },
+  pin: { type: String },
+  hasPin: { type: Boolean, default: false },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

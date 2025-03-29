@@ -28,6 +28,7 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       iban,
       swiftCode,
       code,
+      pin,
     } = req.body;
 
     if (!amount || amount <= 0) {
@@ -55,6 +56,11 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
     const isMatch = await bcrypt.compare(code, sender.transactionCode.code!);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid transaction code" });
+    }
+
+    const isMatchPin = await bcrypt.compare(pin, sender.pin!);
+    if (!isMatchPin) {
+      return res.status(400).json({ message: "Invalid Transfer pin" });
     }
 
     // Deduct balance from sender (status remains "Pending")

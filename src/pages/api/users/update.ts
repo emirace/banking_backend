@@ -5,6 +5,7 @@ import corsMiddleware, {
   AuthenticatedRequest,
   authenticateUser,
 } from "@/utils/middleware";
+import bcrypt from "bcryptjs";
 
 const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
   await corsMiddleware(req, res);
@@ -29,8 +30,11 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
       }
     });
 
-    if (req.body.accountId) {
-      user.facebook.id = req.body.accountId;
+    if (req.body.pin) {
+      const salt = await bcrypt.genSalt(10);
+      const hashedCode = await bcrypt.hash(req.body.pin, salt);
+      user.pin = hashedCode;
+      user.hasPin = true;
     }
 
     await user.save();
