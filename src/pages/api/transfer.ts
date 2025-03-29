@@ -51,6 +51,14 @@ async function handler(req: AuthenticatedRequest, res: NextApiResponse) {
       return res.status(400).json({ message: "Require code" });
     }
 
+    if (!sender.pin) {
+      return res.status(400).json({ message: "Create a transfer pin" });
+    }
+
+    if (!pin) {
+      return res.status(400).json({ message: "Transfer pin is required" });
+    }
+
     const isMatch = await bcrypt.compare(pin, sender.pin!);
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid Transfer pin" });
