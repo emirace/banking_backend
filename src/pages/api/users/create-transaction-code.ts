@@ -17,8 +17,8 @@ const handler = async (req: AuthenticatedRequest, res: NextApiResponse) => {
 
     // Update the user's transaction code in the database
     await User.findByIdAndUpdate(userId, {
-      transactionCode: hashedTransactionCode,
-      hasTransactionCode: true,
+      pin: hashedTransactionCode,
+      hasPin: true,
     });
 
     res.status(200).json({
